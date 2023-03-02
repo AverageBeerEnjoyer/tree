@@ -41,22 +41,22 @@ public class NodeTest {
     @Test
     void foundTest() {
         Node node = createNodeWith3Children();
-        assertEquals("node1", node.find("node1").getName(), "Wrong node found");
-        assertEquals("node2", node.find("node2").getName(), "Wrong node found");
-        assertEquals("node3", node.find("node3").getName(), "Wrong node found");
+        assertEquals("node1", node.findByName("node1").getName(), "Wrong node found");
+        assertEquals("node2", node.findByName("node2").getName(), "Wrong node found");
+        assertEquals("node3", node.findByName("node3").getName(), "Wrong node found");
     }
 
     @Test
     void notFoundTest(){
         Node node = createNodeWith3Children();
-        assertThrows(NoSuchElementException.class,()->node.find("node4"), "Found not existing node");
+        assertThrows(NoSuchElementException.class,()->node.findByName("node4"), "Found not existing node");
     }
 
     @Test
     void removeChildTest(){
         Node node = createNodeWith3Children();
         node.removeChild("node1");
-        assertThrows(NoSuchElementException.class,()->node.find("node1"), "Can not remove child");
+        assertThrows(NoSuchElementException.class,()->node.findByName("node1"), "Can not remove child");
         assertEquals(2, node.getChildren().size(), "Removed more than 1 nodes");
     }
 

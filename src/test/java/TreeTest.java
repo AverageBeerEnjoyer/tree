@@ -25,4 +25,32 @@ public class TreeTest {
         assertNotEquals(root.getId(), node2.getId(), "Found equal ids");
         assertNotEquals(node1.getId(), node2.getId(), "Found equal ids");
     }
+    @Test
+    void deepSearchByNameTest(){
+        Tree tree = new Tree();
+        Node proxi1 = new Node("proxi1");
+        Node proxi2 = new Node("proxi2");
+        Node target1 = new Node("target1");
+        Node target2 = new Node("target2");
+        proxi2.addChild(target1);
+        proxi2.addChild(target2);
+        proxi1.addChild(proxi2);
+        tree.getRoot().addChild(proxi1);
+        assertEquals(target1,tree.deepSearchByName("target1").get(0),"Found wrong node");
+        assertEquals(target2, tree.deepSearchByName("target2").get(0), "Found wrong node");
+    }
+    @Test
+    void deepSearchByIdTest(){
+        Tree tree = new Tree();
+        Node proxi1 = new Node("proxi1");
+        Node proxi2 = new Node("proxi2");
+        Node target1 = new Node("target1");
+        Node target2 = new Node("target2");
+        proxi2.addChild(target1);
+        proxi2.addChild(target2);
+        proxi1.addChild(proxi2);
+        tree.getRoot().addChild(proxi1);
+        long id = target1.getId();
+        assertEquals(target1,tree.deepSearchById(id), "Found wrong note");
+    }
 }
