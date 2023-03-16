@@ -1,16 +1,29 @@
 package ru.ac.uniyar.katkov;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class Node {
+    @JsonIgnore
     private Tree tree;
     private long id = 0;
     private String name;
 
-    private Node parent;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Tree getTree() {
+        return tree;
+    }
+
+    public Node(){}
 
     private final List<Node> children = new ArrayList<>();
 
@@ -34,24 +47,17 @@ public class Node {
         this.id = tree.createId();
         children.forEach(Node::setId);
     }
-
-    private void setParent(Node parent) {
-        this.parent = parent;
-    }
-
     public List<Node> getChildren() {
         return children;
     }
 
     public void addChild(Node child) {
         if (child == this) return;
-        if (child.parent != null) return;
         try {
             findByName(child.getName());
 
         } catch (NoSuchElementException e) {
             children.add(child);
-            child.setParent(this);
             child.setTree(tree);
             if (tree != null) {
                 child.setId();
@@ -60,7 +66,10 @@ public class Node {
     }
 
     public Node findByName(String name) {
-        return children.stream().filter(node -> node.name.equals(name)).findFirst().get();
+        Optional<Node> res;
+        res = children.stream().filter(node -> node.name.equals(name)).findFirst();
+        if (res.isPresent()) return res.get();
+        throw new NoSuchElementException("Not found");
     }
 
     protected void setTree(Tree tree) {
@@ -73,9 +82,10 @@ public class Node {
         Node node;
         try {
             node = findByName(name);
-            children.remove(node);
-        } catch (NoSuchElementException ignored) {
+        } catch (NoSuchElementException e) {
+            return;
         }
+        children.remove(node);
     }
 
     public void removeAllChildren() {
@@ -98,11 +108,29 @@ public class Node {
             return a.get();
         }
         for (Node node : children) {
+            Node res;
             try {
-                return node.deepSearchById(id);
+                res = node.deepSearchById(id);
             } catch (NoSuchElementException ignored) {
+                continue;
             }
+            return res;
         }
         throw new NoSuchElementException();
+    }
+
+    public String toJsonObject() {
+        try {
+            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        } catch(JsonProcessingException e){
+            return "";
+        }
+    }
+    public static Node fromJson(String json){
+        try{
+            return new ObjectMapper().readValue(json, Node.class);
+        } catch (JsonProcessingException e){
+            return null;
+        }
     }
 }

@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TreeTest {
     @Test
     void creationTest() {
-        Tree tree = new Tree();
+        Tree tree = new Tree("root");
         Node root = tree.getRoot();
         assertNotNull(tree, "Tree does not exist");
         assertNotNull(root, "No root node");
@@ -15,7 +15,7 @@ public class TreeTest {
 
     @Test
     void idIsUniqueTest() {
-        Tree tree = new Tree();
+        Tree tree = new Tree("root");
         Node root = tree.getRoot();
         Node node1 = new Node("node1");
         Node node2 = new Node("node2");
@@ -27,7 +27,7 @@ public class TreeTest {
     }
     @Test
     void deepSearchByNameTest(){
-        Tree tree = new Tree();
+        Tree tree = new Tree("root");
         Node proxi1 = new Node("proxi1");
         Node proxi2 = new Node("proxi2");
         Node target1 = new Node("target1");
@@ -41,7 +41,7 @@ public class TreeTest {
     }
     @Test
     void deepSearchByIdTest(){
-        Tree tree = new Tree();
+        Tree tree = new Tree("root");
         Node proxi1 = new Node("proxi1");
         Node proxi2 = new Node("proxi2");
         Node target1 = new Node("target1");
@@ -52,5 +52,18 @@ public class TreeTest {
         tree.getRoot().addChild(proxi1);
         long id = target1.getId();
         assertEquals(target1,tree.deepSearchById(id), "Found wrong note");
+    }
+    @Test
+    void toJsonTest(){
+        Tree tree = new Tree("root");
+        Node node1 = new Node("node1");
+        Node node2 = new Node("node2");
+        Node node3 = new Node("node3");
+        tree.getRoot().addChild(node1);
+        tree.getRoot().addChild(node2);
+        tree.getRoot().addChild(node3);
+        String json = tree.toJsonObject();
+        Tree tree1 = Tree.fromJson(json);
+        assertTrue(tree.equals(tree1));
     }
 }

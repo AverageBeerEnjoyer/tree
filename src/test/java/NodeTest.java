@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 import ru.ac.uniyar.katkov.Node;
+import ru.ac.uniyar.katkov.Tree;
 
 import java.util.NoSuchElementException;
 
@@ -72,5 +73,12 @@ public class NodeTest {
         Node node = new Node("node");
         node.setName("node1");
         assertEquals("node1",node.getName(), "Node name is not changing");
+    }
+    @Test
+    void toJsonObjectTest(){
+        Node node = createNodeWith3Children();
+        String json = node.toJsonObject();
+        Node node1 = Node.fromJson(json);
+        assertNotNull(node1);
     }
 }
